@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <title>E-Paper Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 800px;
+            height: 480px;
+            overflow: hidden;
+            background: #FFF;
+            font-family: sans-serif;
+            color: #000;
+            position: relative;
+        }
+
+
+        #rotated {
+            width: 480px;
+            height: 800px;
+            transform: rotate(-90deg) translate(-480px, 0);
+            transform-origin: top left;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+
+        .dashboard {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            border: 2px solid #000;
+        }
+
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #000;
+        }
+
+        .col-left>*:last-child,
+        .col-right>*:last-child {
+            border-bottom: none;
+        }
+
+        .col-left,
+        .col-right {
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        .col-left {
+            border-right: 1px solid #000;
+        }
+
+        .intro {
+            font-size: 24px;
+        }
+
+        .day {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .date {
+            font-size: 32px;
+        }
+
+        .temp {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .weather {
+            font-size: 24px;
+        }
+
+        .weather-details {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .forecast-day {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .weekday {
+            flex: 2;
+        }
+
+        .low {
+            flex: 1;
+        }
+
+        .high {
+            flex: 1;
+        }
+
+        .forecast-icon {
+            flex: 1;
+        }
+
+        .forecast-icon {
+            max-width: 28px;
+            max-height: 28px;
+            width: auto;
+            height: auto;
+        }
+
+        .countdown {
+            font-size: 24px;
+        }
+
+        .countdown-value {
+            font-size: 30px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .calendar .month-label {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .calendar table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 240px;
+        }
+
+        .calendar th,
+        .calendar td {
+            text-align: center;
+            width: 14.28%;
+            padding: 4px 0;
+            font-size: 14px;
+            border: 1px solid #ccc;
+        }
+
+        .events .title {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .events ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .calendar td:has(.today) {
+            background-color: #f0f0f0;
+        }
+
+        .next-month,
+        .prev-month {
+            color: #aaa;
+        }
+
+        .today {
+            font-weight: bold;
+        }
+
+        .has-event {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="rotated">
+        <div class="dashboard">
+            <div class="col-left">
+                <div class="section">
+                    <div class="intro">Today is</div>
+                    <div class="day">{{day}}</div>
+                    <div class="date">{{date}}</div>
+                </div>
+                <div class="section">
+                    <div class="temp">{{temp}}°F</div>
+                    <div class="weather">{{weather}}</div>
+                    <div class="weather-details">
+                        {{weather_details}}
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="forecast-day">
+                        <div class="weekday">{{day+1}}</div>
+                        <div class="low">{{low+1}}°F</div>
+                        <div class="high">{{high+1}}°F</div>
+                        <img class="forecast-icon" src="{{icon1}}" />
+                    </div>
+                    <div class="forecast-day">
+                        <div class="weekday">{{day+2}}</div>
+                        <div class="low">{{low+2}}°F</div>
+                        <div class="high">{{high+2}}°F</div>
+                        <img class="forecast-icon" src="{{icon2}}" />
+                    </div>
+                    <div class="forecast-day">
+                        <div class="weekday">{{day+3}}</div>
+                        <div class="low">{{low+3}}°F</div>
+                        <div class="high">{{high+3}}°F</div>
+                        <img class="forecast-icon" src="{{icon3}}" />
+                    </div>
+                    <div class="forecast-day">
+                        <div class="weekday">{{day+4}}</div>
+                        <div class="low">{{low+4}}°F</div>
+                        <div class="high">{{high+4}}°F</div>
+                        <img class="forecast-icon" src="{{icon4}}" />
+                    </div>
+                    <div class="forecast-day">
+                        <div class="weekday">{{day+5}}</div>
+                        <div class="low">{{low+5}}°F</div>
+                        <div class="high">{{high+5}}°F</div>
+                        <img class="forecast-icon" src="{{icon5}}" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-right">
+                <div class="section">
+                    <div class="countdown">{{countdown}} days until</div>
+                    <div class="countdown-value">{{target_date}}</div>
+                </div>
+                <div class="section">
+                    <div class="calendar">
+                        <div class="month-label">{{month_label}}</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Su</th>
+                                    <th>Mo</th>
+                                    <th>Tu</th>
+                                    <th>We</th>
+                                    <th>Th</th>
+                                    <th>Fr</th>
+                                    <th>Sa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{0}}</td>
+                                    <td>{{1}}</td>
+                                    <td>{{2}}</td>
+                                    <td>{{3}}</td>
+                                    <td>{{4}}</td>
+                                    <td>{{5}}</td>
+                                    <td>{{6}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{7}}</td>
+                                    <td>{{8}}</td>
+                                    <td>{{9}}</td>
+                                    <td>{{10}}</td>
+                                    <td>{{11}}</td>
+                                    <td>{{12}}</td>
+                                    <td>{{13}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{14}}</td>
+                                    <td>{{15}}</td>
+                                    <td>{{16}}</td>
+                                    <td>{{17}}</td>
+                                    <td>{{18}}</td>
+                                    <td>{{19}}</td>
+                                    <td>{{20}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{21}}</td>
+                                    <td>{{22}}</td>
+                                    <td>{{23}}</td>
+                                    <td>{{24}}</td>
+                                    <td>{{25}}</td>
+                                    <td>{{26}}</td>
+                                    <td>{{27}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{28}}</td>
+                                    <td>{{29}}</td>
+                                    <td>{{30}}</td>
+                                    <td>{{31}}</td>
+                                    <td>{{32}}</td>
+                                    <td>{{33}}</td>
+                                    <td>{{34}}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{35}}</td>
+                                    <td>{{36}}</td>
+                                    <td>{{37}}</td>
+                                    <td>{{38}}</td>
+                                    <td>{{39}}</td>
+                                    <td>{{40}}</td>
+                                    <td>{{41}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="section events">
+                    <div class="title">Upcoming Events</div>
+                    {{upcoming_events}}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
