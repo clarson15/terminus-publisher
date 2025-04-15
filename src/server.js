@@ -20,15 +20,14 @@ async function postNewDashboard() {
   const dashboardTemplate = fs.readFileSync('public/template.html', 'utf8');
   const calendar = await getCalendar();
   const weather = await getWeather();
+  const now = new Date(weather.current.time);
   const getDayName = date => date.toLocaleDateString('en-US', { weekday: 'long' });
   const getMonthName = date => date.toLocaleDateString('en-US', { month: 'long' });
   const daysUntil = date => {
-      const now = new Date();
       if (date < now) date.setFullYear(now.getFullYear() + 1);
       const diff = Math.ceil((date - now) / (1000 * 60 * 60 * 24));
       return diff;
   };
-  const now = new Date();
 
   // update dates
   const targetDate = new Date(`${process.env.TARGET_DATE}T00:00`);
@@ -131,8 +130,8 @@ async function postNewDashboard() {
     }).join('');
     newHtml = newHtml.replace("{{upcoming_events}}", `<ul>${eventList}</ul>`);
   }
-  
 
+  const local = new Date();
   const response = await fetch(`${process.env.TERMINUS_URL}/api/screens`, {
     method: 'POST',
     headers: {
@@ -143,7 +142,7 @@ async function postNewDashboard() {
     body: JSON.stringify({
       image: {
         content: JSON.stringify(newHtml),
-        file_name: 'dashboard'
+        file_name: `dashboard-${local.getFullYear()}-${local.getMonth() + 1}-${local.getDate()}-${local.getHours()}-${local.getMinutes()}.html`,
       }
     })
   });
