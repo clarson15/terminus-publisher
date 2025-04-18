@@ -15,6 +15,12 @@ async function getWeather() {
   return weather;
 };
 
+async function getMessage() {
+  const response = await fetch(process.env.PASTEBIN_URL);
+  const message = await response.text();
+  return message;
+}
+
 async function postNewDashboard() {
   console.log('Publishing new dashboard');
   const dashboardTemplate = fs.readFileSync('public/template.html', 'utf8');
@@ -92,7 +98,6 @@ async function postNewDashboard() {
       }
       
       // Check if this day has events
-      const dayDate = new Date(currentYear, currentMonth, day);
       const hasEvents = events.some(event => {
         const eventDate = event.startDate.toJSDate();
         return eventDate.getDate() === day && 
@@ -119,17 +124,21 @@ async function postNewDashboard() {
     let count = 0;
     const eventList = events.map(ev => {
       if (count >= 5) return '';
+      const timezone = ev.startDate.toString().includes('T') ? process.env.TIME_ZONE : undefined;
       const date = ev.startDate.toJSDate();
-      const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
-      const shortDate = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-      const startTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-      const endTime = ev.endDate.toJSDate().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      const weekday = date.toLocaleDateString('en-US', { weekday: 'long', timeZone: timezone });
+      const shortDate = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', timeZone: timezone });
+      const startTime = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone });
+      const endTime = ev.endDate.toJSDate().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: timezone });
       const title = ev.summary;
       count++;
       return `<li>(${shortDate}) ${weekday}<br> ${title}<br>${startTime} - ${endTime}</li>`;
     }).join('');
     newHtml = newHtml.replace("{{upcoming_events}}", `<ul>${eventList}</ul>`);
   }
+
+  const message = await getMessage();
+  newHtml = newHtml.replace("{{message}}", message);
 
   const local = new Date();
   const response = await fetch(`${process.env.TERMINUS_URL}/api/screens`, {
