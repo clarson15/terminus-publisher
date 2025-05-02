@@ -150,7 +150,7 @@ async function postNewDashboard() {
     },
     body: JSON.stringify({
       image: {
-        content: JSON.stringify(newHtml),
+        content: newHtml,
         file_name: `dashboard-${local.getFullYear()}-${local.getMonth() + 1}-${local.getDate()}-${local.getHours()}-${local.getMinutes()}.html`,
       }
     })
