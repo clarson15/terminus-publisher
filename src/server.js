@@ -261,7 +261,7 @@ function weatherCodeToText(code) {
 }
 
 function shutdown() {
-  console.log('📴 Graceful shutdown requested');
+  console.log('Graceful shutdown requested');
   clearInterval(timer);
   process.exit(0);
 }
